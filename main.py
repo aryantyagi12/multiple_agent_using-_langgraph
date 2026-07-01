@@ -38,4 +38,23 @@ def hotel_agent(state:TravelState):
         "message":[AIMessage(content=f"hotel information fetched")]
         "llm_calls":state.get("llm_calls",0)+1
     }
+def itinerary_agent(state:TravelState):
+    prompt=f"""
+    create a travel itinerary.
+    user query:
+    {state["user_query"]}
+    flight results:
+    {state["flight_results"]}
+    hotel results:
+    {state["hotel_results"]}
+    """
+    response=llm.invoke(
+        [SystemMessage(content="you are an expert travel planner"),
+        HumanMessage(content=prompt)]
+    )
+    return {
+        "itinerary":response.content,
+        "message":[response],
+        "llm_calls":state.get("llm_calls",0)+1
+    }
 
